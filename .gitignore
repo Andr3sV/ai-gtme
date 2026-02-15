@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Env files (secretos; no subir)
+.env
+.env.local
+.env.*.local
+*.env
+
+# Next
+.next/
+out/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# IDE / OS
+.idea/
+.DS_Store
+*.log
+
+# Build
+dist/
