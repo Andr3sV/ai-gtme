@@ -3,9 +3,12 @@ import { isAllowedEmail } from "@/lib/auth";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url);
+  const url = new URL(request.url);
+  const { searchParams } = url;
   const code = searchParams.get("code");
   const next = searchParams.get("next") ?? "/chat";
+  const origin = url.origin.replace(/\/+$/, "");
+  const path = next.startsWith("/") ? next : `/${next}`;
 
   if (code) {
     const supabase = await createClient();
@@ -17,7 +20,7 @@ export async function GET(request: Request) {
       await supabase.auth.signOut();
       return NextResponse.redirect(`${origin}/unauthorized`);
     }
-    return NextResponse.redirect(`${origin}${next}`);
+    return NextResponse.redirect(`${origin}${path}`);
   }
 
   return NextResponse.redirect(`${origin}/login`);

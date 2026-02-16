@@ -1,11 +1,8 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-  const router = useRouter();
-
   async function signInWithGoogle() {
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithOAuth({
@@ -14,25 +11,24 @@ export default function LoginPage() {
         redirectTo: `${window.location.origin}/auth/callback`,
       },
     });
-    if (error) {
-      console.error(error);
-      return;
-    }
+    if (error) console.error(error);
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-6 p-8">
-      <h1 className="text-2xl font-semibold">GTME Backoffice</h1>
-      <p className="text-muted-foreground text-center text-sm">
-        Inicia sesión con tu cuenta de Google (@plinng)
-      </p>
-      <button
-        type="button"
-        onClick={signInWithGoogle}
-        className="rounded-md bg-primary px-4 py-2 text-primary-foreground hover:opacity-90"
-      >
-        Continuar con Google
-      </button>
+    <div className="flex min-h-screen items-center justify-center bg-muted/40 p-4">
+      <div className="w-full max-w-sm rounded-lg border bg-card p-6 text-card-foreground shadow-sm">
+        <h1 className="text-center text-xl font-semibold">GTME Backoffice</h1>
+        <p className="mt-2 text-center text-sm text-muted-foreground">
+          Inicia sesión con tu cuenta de Google para acceder al panel.
+        </p>
+        <button
+          type="button"
+          onClick={signInWithGoogle}
+          className="mt-6 w-full rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground shadow hover:bg-primary/90"
+        >
+          Continuar con Google
+        </button>
+      </div>
     </div>
   );
 }

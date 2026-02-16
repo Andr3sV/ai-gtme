@@ -7,7 +7,7 @@ import {
 } from "@/lib/db/schema";
 import { desc, eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import { inngest } from "@/lib/inngest/client";
+import { executeAgentRun } from "@/lib/inngest/functions";
 
 export async function POST(request: Request) {
   const supabase = await createClient();
@@ -101,16 +101,21 @@ export async function POST(request: Request) {
     content: r.content,
   }));
 
-  await inngest.send({
-    name: "agent/run.requested",
-    data: {
+  try {
+    await executeAgentRun({
       conversation_id: convId,
       message_id: msg.id,
       agent_run_id: run.id,
       content,
       recent_messages,
-    },
-  });
+    });
+  } catch (err) {
+    console.error("[POST /api/chat] executeAgentRun", err);
+    return NextResponse.json(
+      { error: "Agent service failed. Is it running at AGENT_SERVICE_URL?" },
+      { status: 502 }
+    );
+  }
 
   return NextResponse.json(
     {
